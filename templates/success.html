@@ -40,12 +40,15 @@
             <p class="eyebrow">Resume export complete</p>
             <h1>Your resume is ready!</h1>
             <p class="success-detail"><strong>{{ full_name }}</strong> — <code>{{ filename }}</code> has been generated successfully.</p>
+            {% if stored_on_cloud %}
+            <p class="cloud-message">Your resume is securely stored on cloud!</p>
+            {% endif %}
             <div class="success-actions">
                 <a class="submit-button download-button" href="{{ download_url }}">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    Download Resume
+                    Download Your Resume
                 </a>
-                <a class="secondary-button" href="{{ url_for('index') }}">Create Another Resume</a>
+                <a class="secondary-button" href="{{ url_for('index') }}">Build Another Resume</a>
             </div>
         </section>
     </main>

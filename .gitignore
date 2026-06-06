@@ -5,3 +5,4 @@ __pycache__/
 resumes/
 *.pyc
 .DS_Store
+cloudinary_onboarding.py

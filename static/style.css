@@ -822,6 +822,17 @@ textarea:focus {
     font-size: 0.95rem;
 }
 
+.cloud-message {
+    margin: 14px 0 0;
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, var(--indigo-50), #ecfdf5);
+    border: 1px solid var(--indigo-100);
+    color: var(--primary);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
 .success-detail code {
     padding: 2px 8px;
     border-radius: 6px;

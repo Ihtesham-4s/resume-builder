@@ -6,6 +6,7 @@ from flask import Flask, abort, render_template, request, send_from_directory, u
 from werkzeug.utils import secure_filename
 
 from utils.pdf_generator import generate_resume_pdf
+from utils.storage import upload_to_cloudinary
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -158,11 +159,21 @@ def generate():
     app.config["RESUME_DIR"].mkdir(parents=True, exist_ok=True)
     generate_resume_pdf(data, output_path)
 
+    download_url = url_for("download_resume", filename=filename)
+    stored_on_cloud = False
+
+    try:
+        download_url = upload_to_cloudinary(output_path, filename)
+        stored_on_cloud = True
+    except Exception:
+        pass
+
     return render_template(
         "success.html",
         filename=filename,
         full_name=full_name,
-        download_url=url_for("download_resume", filename=filename),
+        download_url=download_url,
+        stored_on_cloud=stored_on_cloud,
     )
 
 
