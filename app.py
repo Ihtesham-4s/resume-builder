@@ -165,6 +165,7 @@ def generate():
 
     try:
         download_url = upload_to_cloudinary(output_path, filename)
+        download_url = download_url.replace("/raw/upload/", "/raw/upload/fl_attachment/")
         stored_on_cloud = True
         app.logger.info("PDF uploaded to Cloudinary: %s", download_url)
     except Exception as exc:
