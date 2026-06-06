@@ -12,7 +12,7 @@ from utils.storage import upload_to_cloudinary
 BASE_DIR = Path(__file__).resolve().parent
 RESUME_DIR = BASE_DIR / "resumes"
 
-load_dotenv()
+load_dotenv(BASE_DIR / ".env")
 
 app = Flask(__name__)
 app.config["RESUME_DIR"] = RESUME_DIR
@@ -161,12 +161,15 @@ def generate():
 
     download_url = url_for("download_resume", filename=filename)
     stored_on_cloud = False
+    upload_error = None
 
     try:
         download_url = upload_to_cloudinary(output_path, filename)
         stored_on_cloud = True
-    except Exception:
-        pass
+        app.logger.info("PDF uploaded to Cloudinary: %s", download_url)
+    except Exception as exc:
+        upload_error = str(exc)
+        app.logger.warning("Cloudinary upload failed, using local download: %s", exc)
 
     return render_template(
         "success.html",
@@ -174,6 +177,7 @@ def generate():
         full_name=full_name,
         download_url=download_url,
         stored_on_cloud=stored_on_cloud,
+        upload_error=upload_error,
     )
 
 
