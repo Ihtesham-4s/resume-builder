@@ -159,15 +159,13 @@ def generate():
     app.config["RESUME_DIR"].mkdir(parents=True, exist_ok=True)
     generate_resume_pdf(data, output_path)
 
-    download_url = url_for("download_resume", filename=filename)
     stored_on_cloud = False
     upload_error = None
 
     try:
-        download_url = upload_to_cloudinary(output_path, filename)
-        download_url = download_url.replace("/raw/upload/", "/raw/upload/fl_attachment/")
+        cloudinary_url = upload_to_cloudinary(output_path, filename)
         stored_on_cloud = True
-        app.logger.info("PDF uploaded to Cloudinary: %s", download_url)
+        print("Cloudinary URL:", cloudinary_url)
     except Exception as exc:
         upload_error = str(exc)
         app.logger.warning("Cloudinary upload failed, using local download: %s", exc)
@@ -176,17 +174,16 @@ def generate():
         "success.html",
         filename=filename,
         full_name=full_name,
-        download_url=download_url,
         stored_on_cloud=stored_on_cloud,
         upload_error=upload_error,
     )
 
 
 @app.route("/download/<filename>")
-def download_resume(filename):
+def download(filename):
     if secure_filename(filename) != filename:
         abort(404)
-    return send_from_directory(app.config["RESUME_DIR"], filename, as_attachment=True)
+    return send_from_directory("resumes", filename, as_attachment=True)
 
 
 if __name__ == "__main__":
