@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder — Create Professional Resumes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=4">
+    <script src="{{ url_for('static', filename='script.js') }}?v=4" defer></script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container">
+            <a class="brand" href="{{ url_for('index') }}">
+                <span class="brand-logo" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="8" y1="13" x2="16" y2="13"/>
+                        <line x1="8" y1="17" x2="13" y2="17"/>
+                    </svg>
+                </span>
+                <div class="brand-text">
+                    <strong>Resume Builder</strong>
+                    <span>ATS-Friendly PDF Export</span>
+                </div>
+            </a>
+            <nav class="header-nav" aria-label="Main navigation">
+                <a href="#personal">Personal</a>
+                <a href="#experience">Experience</a>
+                <a href="#projects">Projects</a>
+                <a href="#preview">Preview</a>
+            </nav>
+            <button class="ghost-button small-button" id="clear-draft" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+                Clear Draft
+            </button>
+        </div>
+    </header>
+
+    <section class="hero-banner">
+        <div class="hero-container">
+            <div class="hero-content">
+                <span class="hero-badge">Free &amp; Professional</span>
+                <h1>Create professional resumes instantly</h1>
+                <p>Build a flexible, ATS-friendly resume with unlimited sections. Every field is optional except your full name.</p>
+            </div>
+            <div class="hero-features">
+                <div class="feature-chip">
+                    <span class="chip-icon">∞</span>
+                    <div>
+                        <strong>Unlimited Sections</strong>
+                        <span>Experience, projects &amp; more</span>
+                    </div>
+                </div>
+                <div class="feature-chip">
+                    <span class="chip-icon">⚡</span>
+                    <div>
+                        <strong>Live Preview</strong>
+                        <span>See changes in real-time</span>
+                    </div>
+                </div>
+                <div class="feature-chip">
+                    <span class="chip-icon">📄</span>
+                    <div>
+                        <strong>PDF Export</strong>
+                        <span>Clean, ATS-friendly output</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="builder-layout">
+        <form class="builder-form" id="resume-form" action="{{ url_for('generate') }}" method="POST">
+            <input type="hidden" id="resume-payload" name="resume_payload">
+
+            {% if error %}
+            <p class="error-banner">{{ error }}</p>
+            {% endif %}
+
+            <section class="form-section card-accent" id="personal">
+                <div class="section-title-row">
+                    <div class="section-heading">
+                        <span class="section-badge">01</span>
+                        <div>
+                            <h2>Personal Info</h2>
+                            <p>Only your full name is required. Everything else is optional.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid two-columns">
+                    <label>
+                        Full Name <span class="required-mark">*</span>
+                        <input type="text" name="full_name" autocomplete="name" required placeholder="John Doe">
+                    </label>
+                    <label>
+                        City
+                        <input type="text" name="city" autocomplete="address-level2" placeholder="Dhaka, Bangladesh">
+                    </label>
+                    <label>
+                        Email
+                        <input type="email" name="email" autocomplete="email" placeholder="name@example.com">
+                    </label>
+                    <label>
+                        Phone
+                        <input type="tel" name="phone" autocomplete="tel" placeholder="+880 1X XXX XXX XX">
+                    </label>
+                    <label>
+                        LinkedIn URL
+                        <input type="url" name="linkedin" placeholder="https://linkedin.com/in/username">
+                    </label>
+                    <label>
+                        GitHub URL
+                        <input type="url" name="github" placeholder="https://github.com/username">
+                    </label>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <div class="section-title-row">
+                    <div class="section-heading">
+                        <span class="section-badge">02</span>
+                        <div>
+                            <h2>Professional Summary</h2>
+                            <p>Optional short intro about your background.</p>
+                        </div>
+                    </div>
+                </div>
+                <label>
+                    Summary
+                    <textarea name="summary" rows="5" placeholder="Write a short, focused summary of your background and career goals."></textarea>
+                </label>
+            </section>
+
+            <section class="form-section">
+                <div class="section-title-row">
+                    <div class="section-heading">
+                        <span class="section-badge">03</span>
+                        <div>
+                            <h2>Skills</h2>
+                            <p>Leave any category blank and it will be hidden in the PDF.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid two-columns">
+                    <label>
+                        Languages
+                        <input type="text" name="skills_languages" placeholder="Python, JavaScript, Java">
+                    </label>
+                    <label>
+                        Backend
+                        <input type="text" name="skills_backend" placeholder="Flask, Django, Node.js">
+                    </label>
+                    <label>
+                        Frontend
+                        <input type="text" name="skills_frontend" placeholder="HTML, CSS, React">
+                    </label>
+                    <label>
+                        Database
+                        <input type="text" name="skills_database" placeholder="MySQL, PostgreSQL, MongoDB">
+                    </label>
+                    <label class="full-width">
+                        Cloud &amp; DevOps
+                        <input type="text" name="skills_cloud_devops" placeholder="AWS, Docker, GitHub Actions">
+                    </label>
+                </div>
+            </section>
+
+            <section class="form-section" id="experience">
+                <div class="section-title-row">
+                    <div class="section-heading">
+                        <span class="section-badge">04</span>
+                        <div>
+                            <h2>Experience</h2>
+                            <p>Add unlimited roles and bullet points.</p>
+                        </div>
+                    </div>
+                    <button class="secondary-button" id="add-experience" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Add Experience
+                    </button>
+                </div>
+                <div class="dynamic-list" id="experience-list"></div>
+            </section>
+
+            <section class="form-section" id="projects">
+                <div class="section-title-row">
+                    <div class="section-heading">
+                        <span class="section-badge">05</span>
+                        <div>
+                            <h2>Projects</h2>
+                            <p>Add unlimited projects with optional GitHub links.</p>
+                        </div>
+                    </div>
+                    <button class="secondary-button" id="add-project" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Add Project
+                    </button>
+                </div>
+                <div class="dynamic-list" id="project-list"></div>
+            </section>
+
+            <section class="form-section">
+                <div class="section-title-row">
+                    <div class="section-heading">
+                        <span class="section-badge">06</span>
+                        <div>
+                            <h2>Education</h2>
+                            <p>All fields are optional. Degree is the main heading in the PDF.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid two-columns">
+                    <label>
+                        Degree
+                        <input type="text" name="education_degree" placeholder="BSc Computer Science">
+                    </label>
+                    <label>
+                        University
+                        <input type="text" name="education_university" placeholder="University name">
+                    </label>
+                    <label>
+                        Location
+                        <input type="text" name="education_location" placeholder="City, Country">
+                    </label>
+                    <label>
+                        CGPA
+                        <input type="text" name="education_cgpa" placeholder="3.8 / 4.0">
+                    </label>
+                    <label>
+                        Duration
+                        <input type="text" name="education_duration" placeholder="2019 – 2023">
+                    </label>
+                    <label>
+                        Final Year Project
+                        <input type="text" name="education_fyp" placeholder="Project title">
+                    </label>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <div class="section-title-row">
+                    <div class="section-heading">
+                        <span class="section-badge">07</span>
+                        <div>
+                            <h2>Certifications &amp; Achievements</h2>
+                            <p>Add as many credentials as you need.</p>
+                        </div>
+                    </div>
+                    <button class="secondary-button" id="add-certification" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Add Certification
+                    </button>
+                </div>
+                <div class="certification-list" id="certification-list"></div>
+            </section>
+
+            <div class="sticky-submit-bar">
+                <div class="submit-bar-inner">
+                    <p class="submit-hint">Your draft is saved automatically</p>
+                    <button class="submit-button" type="submit">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Generate Resume PDF
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <aside class="preview-panel" id="preview" aria-label="Live resume preview">
+            <div class="preview-header">
+                <div class="preview-title-row">
+                    <span class="preview-dot" aria-hidden="true"></span>
+                    <h2>Live Preview</h2>
+                </div>
+                <p>Updates as you type</p>
+            </div>
+            <div class="preview-paper">
+                <div class="preview-content" id="live-preview">
+                    <p class="preview-empty">Start typing to see a live preview of your resume.</p>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <a class="brand" href="{{ url_for('index') }}">
+                    <span class="brand-logo" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="8" y1="13" x2="16" y2="13"/>
+                            <line x1="8" y1="17" x2="13" y2="17"/>
+                        </svg>
+                    </span>
+                    <div class="brand-text">
+                        <strong>Resume Builder</strong>
+                        <span>Create professional resumes instantly</span>
+                    </div>
+                </a>
+                <p class="footer-tagline">A free, flexible resume builder with dynamic sections and ATS-friendly PDF export.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h3>Features</h3>
+                    <ul>
+                        <li>Dynamic experience &amp; projects</li>
+                        <li>Unlimited bullet points</li>
+                        <li>Live preview</li>
+                        <li>Auto-save drafts</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Sections</h3>
+                    <ul>
+                        <li><a href="#personal">Personal Info</a></li>
+                        <li><a href="#experience">Experience</a></li>
+                        <li><a href="#projects">Projects</a></li>
+                        <li><a href="#preview">Live Preview</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-container footer-bottom-inner">
+                <p>&copy; 2026 Resume Builder. Built with Flask &amp; fpdf2.</p>
+                <p class="footer-note">All fields optional except Full Name</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
